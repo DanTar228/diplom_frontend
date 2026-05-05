@@ -35,9 +35,12 @@ export default function App() {
     try {
       const result = await transcribeAudio(file);
       console.log(result)
+      if (result.status != 200) {
+        throw result
+      }
       setMusicxml(result.musicxml);
     } catch (err: any) {
-      console.error(err);
+      console.error(err.message);
       setError('Произошла ошибка при транскрибации. Пожалуйста, попробуйте еще раз.');
     } finally {
       setIsLoading(false);
