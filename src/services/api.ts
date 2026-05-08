@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://78.17.41.31:8000',
+  baseURL: 'https://notescribe.ru:8000',
   headers :{
     'x-apikey': '59a7ad19f5a9fa0808f11931',
   'Access-Control-Allow-Origin' : '*',
