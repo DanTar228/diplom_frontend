@@ -30,8 +30,28 @@
 .serif {
   font-family: var(--font-serif);
 }
-
+#osmd-container .osmdCursor {
+  opacity: 0.5;
+  background-color: #6366f1 !important; /* Indigo-500 */
+}
 /* OpenSheetMusicDisplay overrides */
 #osmd-container svg {
   @apply max-w-full h-auto;
+}
+#osmd-container img, #osmd-container svg {
+  position: relative;
+  z-index: 1;
+}
+
+/* Сам курсор */
+.osmdCursor {
+  background-color: rgba(99, 102, 241, 0.5) !important; /* Indigo 500 с прозрачностью */
+  width: 15px !important; /* Делаем шире для видимости */
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Цвет курсора для темной темы, если нужно */
+.dark .osmdCursor {
+  background-color: rgba(245, 158, 11, 0.6) !important; /* Amber 500 */
 }

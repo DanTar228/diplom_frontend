@@ -4,7 +4,7 @@ import { Music2 } from 'lucide-react';
 import ThemeToggle from './components/ThemeToggle';
 import FileUploader from './components/FileUploader';
 import MusicDisplay from './components/MusicDisplay';
-import { transcribeAudio } from './services/api';
+import { transcribeAudio, apiStatusRequest } from './services/api';
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -16,10 +16,28 @@ export default function App() {
     return 'light';
   });
 
+  type apiStatusType = {
+    status_code: string,
+    ping?: number
+  }
+
   const [isLoading, setIsLoading] = useState(false);
   const [musicxml, setMusicxml] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
+  const [apiStatus, setApiStatus] = useState<apiStatusType>(async ()=>{
+    if(typeof window !== 'undefined'){
+      try{
+        const data = await apiStatusRequest()
+        setApiStatus(data)
+        console.log(data)
+      }
+      catch (e){
+        console.error(e)
+        setApiStatus({status_code:400})
+      }
+    }
+  })
+  
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('theme', theme);
@@ -28,6 +46,17 @@ export default function App() {
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
+
+  const upload_window = async () =>{
+    try{
+      const api_status = await apiStatusRequest()
+      setApiStatus(api_status)
+      console.log(apiStatus)
+    }
+    catch{
+      setApiStatus(null)
+    }
+  }
 
   const handleUpload = async (file: File) => {
     setIsLoading(true);
@@ -116,8 +145,8 @@ export default function App() {
 
       <footer className="h-10 bg-slate-800 text-slate-400 px-8 flex items-center justify-between text-[10px] uppercase tracking-widest font-bold">
         <div className="flex gap-6">
-          <span>Статус API: <span className="text-green-400">Активен</span></span>
-          <span className="hidden sm:inline">Задержка: 142мс</span>
+          <span>Статус API:{apiStatus.status_code == 200 ?  <span className="text-green-400"> Активен</span> : <span className="text-red-400"> Неактивен</span>}</span>
+          <span className="hidden sm:inline">Задержка: {apiStatus.status_code == 200 ? apiStatus.ping + 'мс' : "undefined"}</span>
         </div>
         <div>
           © 2026 NotaTranscribe AI Engine
